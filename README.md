@@ -20,6 +20,15 @@ mkdir proyek_analisis_data
 cd proyek_analisis_data
 pip install jupyterlab
 pip install streamlit
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+streamlit==1.43.1
+pandas
+matplotlib==3.10.1
+numpy==2.2.3
+seaborn==0.13.2
 
 ```
 
