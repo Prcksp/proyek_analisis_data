@@ -202,7 +202,7 @@ if weather_chart_type == "Barplot":
     sns.barplot(
         x=filtered_weather_df["hr"], 
         y=filtered_weather_df["cnt"], 
-        palette="magma", 
+        colour="grey", 
         ax=ax, 
         order=range(24)  
     )
