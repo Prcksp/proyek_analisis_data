@@ -79,7 +79,6 @@ st.pyplot(fig)
 
 st.subheader("Jumlah Penyewaan Sepeda Berdasarkan Hari dalam Seminggu")
 
-# Mapping angka musim ke nama musim
 season_mapping = {
     1: "Spring",
     2: "Summer",
@@ -87,53 +86,40 @@ season_mapping = {
     4: "Winter"
 }
 
-# Mapping angka kondisi cuaca ke deskripsi yang lebih jelas
 weather_mapping = {
     1: "Cerah",
     2: "Berawan",
     3: "Hujan"
 }
 
-# Ubah angka menjadi teks deskriptif dalam dataset
 day_df["season_name"] = day_df["season"].map(season_mapping)
 day_df["weather_desc"] = day_df["weathersit"].map(weather_mapping)
 
-# Sidebar untuk filter
 st.sidebar.header("Filter Data")
 
-# Pilihan musim
 selected_season = st.sidebar.selectbox(
     "Pilih Musim",
     options=["Semua"] + list(season_mapping.values()),  
     index=0  
 )
 
-# Pilihan kondisi cuaca
 selected_weather = st.sidebar.multiselect(
     "Pilih Kondisi Cuaca",
     options=["Semua"] + list(weather_mapping.values()),  
     default=["Semua"]
 )
 
-# Terapkan filter
 filtered_df = day_df.copy()
 
-# Filter berdasarkan musim
 if selected_season != "Semua":
     filtered_df = filtered_df[filtered_df["season_name"] == selected_season]
 
-# Filter berdasarkan cuaca
 if "Semua" not in selected_weather:
     filtered_df = filtered_df[filtered_df["weather_desc"].isin(selected_weather)]
 
-# Menambahkan kolom hari dalam seminggu (0 = Senin, ..., 6 = Minggu)
 filtered_df["weekday"] = filtered_df["dteday"].dt.dayofweek
 
-# Menghitung rata-rata penyewaan per hari dalam seminggu
 weekday_avg = filtered_df.groupby("weekday")["cnt"].mean().reset_index()
-
-# Visualisasi: Jumlah Penyewaan Sepeda Berdasarkan Hari dalam Seminggu
-st.subheader("Jumlah Penyewaan Sepeda Berdasarkan Hari dalam Seminggu")
 
 fig, ax = plt.subplots(figsize=(10, 5))
 bars = sns.barplot(
@@ -142,21 +128,16 @@ bars = sns.barplot(
     palette="viridis",
     ax=ax
 )
-
-# Set label sumbu dan judul
 ax.set_xlabel("Hari dalam Seminggu")
 ax.set_ylabel("Rata-rata Jumlah Penyewaan")
 ax.set_title("Jumlah Penyewaan Sepeda Berdasarkan Hari dalam Seminggu")
 
-# Mengubah label angka menjadi nama hari (Senin - Minggu)
 ax.set_xticks(range(7))
 ax.set_xticklabels(["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"])
 
-# Menambahkan label jumlah penyewaan di atas batang
 for bar in bars.containers:
     ax.bar_label(bar, fmt="%.0f", label_type="edge", fontsize=10, color="black")
 
-# Menampilkan plot di Streamlit
 st.pyplot(fig)
 
 st.subheader("Distribusi Penyewaan Sepeda Per Jam")
