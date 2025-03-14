@@ -130,7 +130,7 @@ fig, ax = plt.subplots(figsize=(10, 5))
 bars = sns.barplot(
     x=weekday_avg["weekday"],
     y=weekday_avg["cnt"],
-    palette="viridis",
+    color="purple",
     ax=ax
 )
 
