@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+st.set_page_config(layout="wide")
+
 day_df = pd.read_csv("Data/day.csv")
 hour_df = pd.read_csv("Data/hour.csv")
 
@@ -79,6 +81,7 @@ st.pyplot(fig)
 
 st.subheader("Jumlah Penyewaan Sepeda Berdasarkan Hari dalam Seminggu")
 
+
 season_mapping = {
     1: "Spring",
     2: "Summer",
@@ -95,19 +98,21 @@ weather_mapping = {
 day_df["season_name"] = day_df["season"].map(season_mapping)
 day_df["weather_desc"] = day_df["weathersit"].map(weather_mapping)
 
-st.sidebar.header("Filter Data")
+col1, col2 = st.columns(2)
 
-selected_season = st.sidebar.selectbox(
-    "Pilih Musim",
-    options=["Semua"] + list(season_mapping.values()),  
-    index=0  
-)
+with col1:
+    selected_season = st.selectbox(
+        "Pilih Musim:",
+        options=["Semua"] + list(season_mapping.values()),  
+        index=0  
+    )
 
-selected_weather = st.sidebar.multiselect(
-    "Pilih Kondisi Cuaca",
-    options=["Semua"] + list(weather_mapping.values()),  
-    default=["Semua"]
-)
+with col2:
+    selected_weather = st.multiselect(
+        "Pilih Kondisi Cuaca:",
+        options=["Semua"] + list(weather_mapping.values()),  
+        default=["Semua"]
+    )
 
 filtered_df = day_df.copy()
 
@@ -128,6 +133,7 @@ bars = sns.barplot(
     palette="viridis",
     ax=ax
 )
+
 ax.set_xlabel("Hari dalam Seminggu")
 ax.set_ylabel("Rata-rata Jumlah Penyewaan")
 ax.set_title("Jumlah Penyewaan Sepeda Berdasarkan Hari dalam Seminggu")
@@ -142,24 +148,24 @@ st.pyplot(fig)
 
 st.subheader("Distribusi Penyewaan Sepeda Per Jam")
 
-distribution_type = st.radio("Pilih Jenis Distribusi", ["Histogram", "KDE", "Boxplot"], index=0)
+distribution_type = st.radio("Pilih Jenis Distribusi:", ["Histogram", "KDE", "Boxplot"], index=0)
 
 fig, ax = plt.subplots(figsize=(10, 5))
 
 if distribution_type == "Histogram":
-    sns.histplot(hour_filtered_df["cnt"], bins=20, kde=True, color="blue", ax=ax)
+    sns.histplot(hour_df["cnt"], bins=20, kde=True, color="blue", ax=ax)
     ax.set_title("Histogram Penyewaan Sepeda Per Jam")
     ax.set_xlabel("Jumlah Penyewaan")
     ax.set_ylabel("Frekuensi")
 
 elif distribution_type == "KDE":
-    sns.kdeplot(hour_filtered_df["cnt"], fill=True, color="green", ax=ax)
+    sns.kdeplot(hour_df["cnt"], fill=True, color="green", ax=ax)
     ax.set_title("KDE Penyewaan Sepeda Per Jam")
     ax.set_xlabel("Jumlah Penyewaan")
     ax.set_ylabel("Density")
 
 elif distribution_type == "Boxplot":
-    sns.boxplot(x=hour_filtered_df["hr"], y=hour_filtered_df["cnt"], palette="coolwarm", ax=ax)
+    sns.boxplot(x=hour_df["hr"], y=hour_df["cnt"], palette="coolwarm", ax=ax)
     ax.set_title("Boxplot Penyewaan Sepeda Per Jam")
     ax.set_xlabel("Jam")
     ax.set_ylabel("Jumlah Penyewaan")
@@ -168,10 +174,27 @@ st.pyplot(fig)
 
 st.subheader("Pengaruh Cuaca terhadap Penyewaan Sepeda")
 
-weather_filter = st.selectbox("Pilih Kategori Cuaca", sorted(hour_filtered_df["weathersit"].unique()))
-weather_chart_type = st.radio("Pilih Jenis Visualisasi", ["Barplot", "Boxplot"], index=0)
+weather_mapping = {
+    1: "Cerah",
+    2: "Berawan",
+    3: "Hujan"
+}
 
-filtered_weather_df = hour_filtered_df[hour_filtered_df["weathersit"] == weather_filter]
+hour_df["weather_desc"] = hour_df["weathersit"].map(weather_mapping)
+
+weather_filter = st.selectbox(
+    "Pilih Kategori Cuaca",
+    options=list(weather_mapping.values()),  
+    index=0
+)
+
+weather_chart_type = st.radio(
+    "Pilih Jenis Visualisasi", 
+    ["Barplot", "Boxplot"], 
+    index=0
+)
+
+filtered_weather_df = hour_df[hour_df["weather_desc"] == weather_filter]
 
 fig, ax = plt.subplots(figsize=(12, 5))
 
@@ -184,6 +207,7 @@ if weather_chart_type == "Barplot":
         order=range(24)  
     )
     ax.set_title(f"Penyewaan Sepeda per Jam pada Cuaca {weather_filter}")
+
 elif weather_chart_type == "Boxplot":
     sns.boxplot(
         x=filtered_weather_df["hr"], 
