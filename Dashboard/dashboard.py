@@ -81,7 +81,6 @@ st.pyplot(fig)
 
 st.subheader("Jumlah Penyewaan Sepeda Berdasarkan Hari dalam Seminggu")
 
-
 season_mapping = {
     1: "Spring",
     2: "Summer",
@@ -95,8 +94,8 @@ weather_mapping = {
     3: "Hujan"
 }
 
-day_df["season_name"] = day_df["season"].map(season_mapping)
-day_df["weather_desc"] = day_df["weathersit"].map(weather_mapping)
+day_filtered_df["season_name"] = day_filtered_df["season"].map(season_mapping)
+day_filtered_df["weather_desc"] = day_filtered_df["weathersit"].map(weather_mapping)
 
 col1, col2 = st.columns(2)
 
@@ -114,7 +113,7 @@ with col2:
         default=["Semua"]
     )
 
-filtered_df = day_df.copy()
+filtered_df = day_filtered_df.copy()
 
 if selected_season != "Semua":
     filtered_df = filtered_df[filtered_df["season_name"] == selected_season]
@@ -123,27 +122,14 @@ if "Semua" not in selected_weather:
     filtered_df = filtered_df[filtered_df["weather_desc"].isin(selected_weather)]
 
 filtered_df["weekday"] = filtered_df["dteday"].dt.dayofweek
-
-weekday_avg = filtered_df.groupby("weekday")["cnt"].mean().reset_index()
+weekday_avg = filtered_df.groupby("weekday")["cnt"].mean()
+weekday_avg = weekday_avg.reindex([6, 0, 1, 2, 3, 4, 5])  # Menyesuaikan urutan hari Minggu-Sabtu
 
 fig, ax = plt.subplots(figsize=(10, 5))
-bars = sns.barplot(
-    x=weekday_avg["weekday"],
-    y=weekday_avg["cnt"],
-    color="purple",
-    ax=ax
-)
-
+sns.barplot(x=["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"], y=weekday_avg.values, color="grey", ax=ax)
 ax.set_xlabel("Hari dalam Seminggu")
-ax.set_ylabel("Rata-rata Jumlah Penyewaan")
+ax.set_ylabel("Rata-rata Penyewaan")
 ax.set_title("Jumlah Penyewaan Sepeda Berdasarkan Hari dalam Seminggu")
-
-ax.set_xticks(range(7))
-ax.set_xticklabels(["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"])
-
-for bar in bars.containers:
-    ax.bar_label(bar, fmt="%.0f", label_type="edge", fontsize=10, color="black")
-
 st.pyplot(fig)
 
 st.subheader("Distribusi Penyewaan Sepeda Per Jam")
