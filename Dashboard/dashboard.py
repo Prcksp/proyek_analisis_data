@@ -185,22 +185,21 @@ filtered_weather_df = hour_df[hour_df["weather_desc"] == weather_filter]
 fig, ax = plt.subplots(figsize=(12, 5))
 
 if weather_chart_type == "Barplot":
+    hour_avg = filtered_weather_df.groupby('hr')['cnt'].mean()
     sns.barplot(
-        x=filtered_weather_df["hr"], 
-        y=filtered_weather_df["cnt"], 
+        x=hour_avg.index, 
+        y=hour_avg.values, 
         color="grey", 
-        ax=ax, 
-        order=range(24)  
+        ax=ax
     )
-    ax.set_title(f"Penyewaan Sepeda per Jam pada Cuaca {weather_filter}")
+    ax.set_title(f"Rata-rata Penyewaan Sepeda per Jam pada Cuaca {weather_filter}")
 
 elif weather_chart_type == "Boxplot":
     sns.boxplot(
         x=filtered_weather_df["hr"], 
         y=filtered_weather_df["cnt"], 
         palette="coolwarm", 
-        ax=ax, 
-        order=range(24)  
+        ax=ax
     )
     ax.set_title(f"Distribusi Penyewaan Sepeda pada Cuaca {weather_filter}")
 
@@ -209,4 +208,18 @@ ax.set_ylabel("Jumlah Penyewaan")
 ax.set_xticks(range(24))  
 ax.set_xticklabels(range(24))  
 
+st.pyplot(fig)
+
+st.subheader("Rata-rata Penyewaan Sepeda Berdasarkan Hari")
+fig, ax = plt.subplots(figsize=(12, 5))
+hour_avg_weekday = hour_df.groupby('weekday')['cnt'].mean()
+sns.barplot(
+    x=hour_avg_weekday.index, 
+    y=hour_avg_weekday.values, 
+    color='grey', 
+    ax=ax
+)
+ax.set_xlabel("Hari dalam seminggu (0=Senin, 6=Minggu)")
+ax.set_ylabel("Rata-rata Penyewaan")
+ax.set_title("Rata-rata Penyewaan Sepeda Berdasarkan Hari")
 st.pyplot(fig)
