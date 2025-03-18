@@ -130,6 +130,7 @@ sns.barplot(x=["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"], y=weekday_avg.v
 ax.set_xlabel("Hari dalam Seminggu")
 ax.set_ylabel("Rata-rata Penyewaan")
 ax.set_title("Jumlah Penyewaan Sepeda Berdasarkan Hari dalam Seminggu")
+ax.grid(axis='y', linestyle='--', alpha=0.6)
 st.pyplot(fig)
 
 st.subheader("Distribusi Penyewaan Sepeda Per Jam")
@@ -210,16 +211,20 @@ ax.set_xticklabels(range(24))
 
 st.pyplot(fig)
 
-st.subheader("Rata-rata Penyewaan Sepeda Berdasarkan Hari")
+st.subheader("Rata-rata Penyewaan Sepeda Berdasarkan Hari dan Faktor Cuaca")
+
 fig, ax = plt.subplots(figsize=(12, 5))
-hour_avg_weekday = hour_df.groupby('weekday')['cnt'].mean()
-sns.barplot(
-    x=hour_avg_weekday.index, 
-    y=hour_avg_weekday.values, 
-    color='grey', 
-    ax=ax
-)
+
+hour_avg = hour_df.groupby(['weekday', 'weathersit'])['cnt'].mean().reset_index()
+
+barplot = sns.barplot(x='weekday', y='cnt', hue='weathersit', data=hour_avg, palette='coolwarm', ax=ax)
+
 ax.set_xlabel("Hari dalam seminggu (0=Senin, 6=Minggu)")
 ax.set_ylabel("Rata-rata Penyewaan")
-ax.set_title("Rata-rata Penyewaan Sepeda Berdasarkan Hari")
+ax.set_title("Rata-rata Penyewaan Sepeda Berdasarkan Hari dan Faktor Cuaca")
+ax.grid(axis='y', linestyle='--', alpha=0.6)
+
+handles, labels = barplot.get_legend_handles_labels()
+ax.legend(handles=handles, title="Kondisi Cuaca", labels=["Cerah", "Mendung", "Hujan", "Ekstrem"])
+
 st.pyplot(fig)
