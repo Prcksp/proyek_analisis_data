@@ -185,7 +185,6 @@ filtered_weather_df = hour_df[hour_df["weather_desc"] == weather_filter]
 
 fig, ax = plt.subplots(figsize=(12, 5))
 
-# Warna berbeda untuk setiap kondisi cuaca
 color_mapping = {
     "Cerah": "blue",
     "Berawan": "orange",
