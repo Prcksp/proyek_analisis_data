@@ -185,12 +185,25 @@ filtered_weather_df = hour_df[hour_df["weather_desc"] == weather_filter]
 
 fig, ax = plt.subplots(figsize=(12, 5))
 
+# Warna berbeda untuk setiap kondisi cuaca
+color_mapping = {
+    "Cerah": "blue",
+    "Berawan": "orange",
+    "Hujan": "red"
+}
+
+palette_mapping = {
+    "Cerah": "Blues",
+    "Berawan": "Oranges",
+    "Hujan": "Reds"
+}
+
 if weather_chart_type == "Barplot":
     hour_avg = filtered_weather_df.groupby('hr')['cnt'].mean()
     sns.barplot(
         x=hour_avg.index, 
         y=hour_avg.values, 
-        color="grey", 
+        color=color_mapping.get(weather_filter, "grey"), 
         ax=ax
     )
     ax.set_title(f"Rata-rata Penyewaan Sepeda per Jam pada Cuaca {weather_filter}")
@@ -199,7 +212,7 @@ elif weather_chart_type == "Boxplot":
     sns.boxplot(
         x=filtered_weather_df["hr"], 
         y=filtered_weather_df["cnt"], 
-        palette="coolwarm", 
+        palette=palette_mapping.get(weather_filter, "coolwarm"), 
         ax=ax
     )
     ax.set_title(f"Distribusi Penyewaan Sepeda pada Cuaca {weather_filter}")
@@ -210,6 +223,7 @@ ax.set_xticks(range(24))
 ax.set_xticklabels(range(24))  
 
 st.pyplot(fig)
+
 
 st.subheader("Rata-rata Penyewaan Sepeda Berdasarkan Hari dan Faktor Cuaca")
 
