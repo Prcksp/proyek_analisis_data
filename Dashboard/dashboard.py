@@ -159,8 +159,6 @@ elif distribution_type == "Boxplot":
 
 st.pyplot(fig)
 
-st.subheader("Pengaruh Cuaca terhadap Penyewaan Sepeda")
-
 weather_mapping = {
     1: "Cerah",
     2: "Berawan",
@@ -186,9 +184,9 @@ filtered_weather_df = hour_df[hour_df["weather_desc"] == weather_filter]
 fig, ax = plt.subplots(figsize=(12, 5))
 
 color_mapping = {
-    "Cerah": "blue",
-    "Berawan": "orange",
-    "Hujan": "red"
+    "Cerah": "#1f77b4", 
+    "Berawan": "#ff7f0e", 
+    "Hujan": "#d62728"  
 }
 
 palette_mapping = {
