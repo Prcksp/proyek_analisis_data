@@ -184,9 +184,9 @@ filtered_weather_df = hour_df[hour_df["weather_desc"] == weather_filter]
 fig, ax = plt.subplots(figsize=(12, 5))
 
 color_mapping = {
-    "Cerah": "#1f77b4", 
-    "Berawan": "#ff7f0e", 
-    "Hujan": "#d62728"  
+    "Cerah": "#0000FF", 
+    "Berawan": "#FFA500",  
+    "Hujan": "#FF0000"  
 }
 
 palette_mapping = {
